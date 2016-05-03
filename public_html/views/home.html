@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="col-xs-offset-1 col-xs-7">
+	<table class="table table-bordered table-stripped">
+	  <thead>
+		<tr>
+		  <th>Name</th>
+		  <th class="text-center">Quantity</th>
+		  <th class="text-center">Price</th>
+		  <th>Persons</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		<tr ng-repeat="product in productsList">
+		  <td>{{product.name}}</td>
+		  <td class="text-center">{{product.quantity}}</td>
+		  <td class="text-center">{{product.price}}</td>
+		  <td class="small-padding">
+			<span ng-repeat="pers in product.persons | orderBy:'+'" ng-style=""
+			  class="short-person">
+			  {{pers | shortPerson:personsPool}}
+			</span>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
+  </div>
+  <div class="col-xs-3">
+	<table class="table table-bordered">
+	  <tr ng-repeat="person in personsPool">
+		<td ng-style="{'background': person.color}">{{person.name}}</td>
+	  </tr>
+	</table>
+  </div>
+</div>

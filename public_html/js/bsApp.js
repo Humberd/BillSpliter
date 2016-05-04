@@ -24,51 +24,48 @@ app.controller("mainCtrl", function ($scope, idService) {
         persons: [1]
     };
     $scope.productsList = [{
-            id: 1,
+            id: idService.getNextProductId(),
             name: "Pepsi",
             price: 4.99,
             quantity: 6,
             persons: [1, 2, 3]
         }, {
-            id: 2,
+            id: idService.getNextProductId(),
             name: "Kukurydza",
             price: 2.49,
             quantity: 2,
             persons: [1]
         }];
     $scope.personsPool = [{
-            id: 1,
+            id: idService.getNextPersonId(),
             name: "Sawik",
             color: Please.make_color()
         }, {
-            id: 2,
+            id: idService.getNextPersonId(),
             name: "Misiek",
             color: Please.make_color()
         }, {
-            id: 3,
+            id: idService.getNextPersonId(),
             name: "Mścich",
             color: Please.make_color()
         }];
 
     $scope.addPerson = function (person) {
-        person.id = idService.getNextPersonId();
-        person.color = Please.make_color();
-        $scope.personsPool.push(person);
+        if (angular.isDefined(person) && angular.isString(person.name)) {
+            person.id = idService.getNextPersonId();
+            person.color = Please.make_color();
+            $scope.personsPool.push(person);
+            $scope.refreshNewPerson();
+        }
     };
-    $scope.editPerson = function (person, index) {
-        /*if (angular.isDefined(person.id)) {
-         for (var i = 0; i<$scope.personsPool; i++) {
-         if ($scope.personsPool[i].id == person.id) {
-         $scope.personsPool[i] = person;
-         return;
-         }
-         }
-         }
-         $scope.addPerson(person);*/
-        $scope.personsPool[index] = person;
-    };
-    $scope.removePerson = function (index) {
-        $scope.personsPool.splice(index, 1);
+    $scope.removePerson = function (id) {
+        for (var p in $scope.personsPool) {
+            if ($scope.personsPool[p].id == id) {
+                $scope.removePersonFromProducts(id);
+                $scope.personsPool.splice(p, 1);
+                return;
+            }
+        }
     };
     $scope.removePersonFromProducts = function (id) {
         for (var idx in $scope.productsList) {
@@ -82,9 +79,17 @@ app.controller("mainCtrl", function ($scope, idService) {
         }
     };
     $scope.addProduct = function (product) {
-        product.id = idService.getNextProductId();
-        $scope.productsList.push(angular.copy(product));
-        $scope.refreshNewProduct();
+        try {
+//            product.quantity = $scope.validateNumber(product.quantity);
+//            product.price = $scope.validateNumber(product.price);
+//            product.name = $scope.validateString(product.name);
+            product.id = idService.getNextProductId();
+            $scope.productsList.push(angular.copy(product));
+            $scope.refreshNewProduct();
+        } catch (err) {
+            console.log(err);
+        }
+
     };
     $scope.removeProduct = function (index) {
         $scope.productsList.splice(index, 1);
@@ -138,9 +143,55 @@ app.controller("mainCtrl", function ($scope, idService) {
         };
     };
 
-    $scope.addProductShortcut = function (newProduct, event) {
+    $scope.refreshNewPerson = function () {
+        $scope.newPerson = {
+            name: null
+        };
+    };
+
+    $scope.addProductShortcutKey = function (newProduct, event) {
         if (event.keyCode === 13) {
             $scope.addProduct(newProduct);
+        }
+    };
+
+    $scope.addPersonShortcutKey = function (newPerson, event) {
+        if (event.keyCode === 13) {
+            $scope.addPerson(newPerson);
+        }
+    };
+
+    $scope.refreshPersonColor = function (id) {
+        for (var p in $scope.personsPool) {
+            if ($scope.personsPool[p].id == id) {
+                $scope.personsPool[p].color = Please.make_color();
+                return;
+            }
+        }
+    };
+
+    $scope.validateNumber = function (value) {
+        if (angular.isNumber(value)) {
+            return value;
+        }
+        if (angular.isString(value)) {
+            value = value.replace(",", ".");
+            value = parseFloat(value, 10);
+//            console.log(value);
+            if (isNaN(value)) {
+                throw "not a number";
+            } else {
+                return value;
+            }
+        }
+        throw "not a number";
+    };
+
+    $scope.validateString = function (string) {
+        if (angular.isString(string)) {
+            return string;
+        } else {
+            throw "not a string";
         }
     };
 });

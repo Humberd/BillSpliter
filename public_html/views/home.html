@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-offset-1 col-md-8">
-        <table class="table table-bordered table-stripped">
+        <table class="table table-bordered" id="products-table">
             <thead>
                 <tr>
                     <th class="col-xs-1"></th>
@@ -10,54 +10,115 @@
                     <th class="col-xs-5 text-center">Persons</th>
                 </tr>
             </thead>
+            <!--            <tfoot>
+                            <tr class="table-form" ng-keypress="addProductShortcutKey(newProduct, $event)" tabindex="0">
+                                <td class="text-center col-xs-1">
+                                    <span class="glyphicon glyphicon-floppy-save custom-glyphicon" 
+                                          ng-click="addProduct(newProduct)" ng-init="refreshNewProduct()"></span>
+                                </td>
+                                <td class="col-xs-3">
+                                    <input class="form-control custom-input" placeholder="Name" ng-model="newProduct.name"/>
+                                </td>
+                                <td class="col-xs-1">
+                                    <input class="form-control custom-input custom-input-small text-center" placeholder="Qty" 
+                                           ng-model="newProduct.quantity"/>
+                                </td>
+                                <td class="col-xs-2">
+                                    <input class="form-control custom-input custom-input-small text-center" placeholder="Price" 
+                                           ng-model="newProduct.price"/>
+                                </td>
+                                <td class="text-center persons-cell col-xs-5">
+                                    <div class="person-shortcut" ng-repeat="person in personsPool" ng-style="personShortcutColor(person, newProduct.persons)"
+                                         ng-class="personShortcutClass(person, newProduct.persons)" ng-click="toggleAddPersonToProduct(person.id, newProduct.persons)">
+                                        {{person.name| personShortcut}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>-->
+            <!--            <tbody>
+                        </tbody>-->
+        </table>
+        <div id="products-table-body-div">
+            <table class="table table-bordered" id="products-table-body">
+                <tbody>
+                    <tr ng-repeat="product in productsList">
+                        <td class="text-center col-xs-1">
+                            <span class="glyphicon glyphicon-remove custom-glyphicon" 
+                                  ng-click="removeProduct($index)"></span>
+                        </td>
+                        <td class="col-xs-3">{{product.name}}</td>
+                        <td class="text-center col-xs-1">{{product.quantity}}</td>
+                        <td class="text-center col-xs-2">{{product.price| currency}}</td>
+                        <td class="text-center persons-cell col-xs-5">
+                            <div class="person-shortcut" ng-repeat="person in personsPool" ng-style="personShortcutColor(person, product.persons)"
+                                 ng-class="personShortcutClass(person, product.persons)" ng-click="toggleAddPersonToProduct(person.id, product.persons)">
+                                {{person.name| personShortcut:2}}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <table class="table table-bordered" id="products-table-foot">
             <tfoot>
-                <tr class="static table-form" ng-keypress="addProductShortcut(newProduct, $event)" tabindex="0">
-                    <td class="text-center">
+                <tr class="table-form" ng-keypress="addProductShortcutKey(newProduct, $event)" tabindex="0">
+                    <td class="text-center col-xs-1">
                         <span class="glyphicon glyphicon-floppy-save custom-glyphicon" 
                               ng-click="addProduct(newProduct)" ng-init="refreshNewProduct()"></span>
                     </td>
-                    <td>
+                    <td class="col-xs-3">
                         <input class="form-control custom-input" placeholder="Name" ng-model="newProduct.name"/>
                     </td>
-                    <td>
-                        <input class="form-control custom-input text-center" placeholder="Qty" ng-model="newProduct.quantity"/>
+                    <td class="col-xs-1">
+                        <input class="form-control custom-input custom-input-small text-center" placeholder="Qty" 
+                               ng-model="newProduct.quantity"/>
                     </td>
-                    <td>
-                        <input class="form-control custom-input text-center" placeholder="Price" ng-model="newProduct.price"/>
+                    <td class="col-xs-2">
+                        <input class="form-control custom-input custom-input-small text-center" placeholder="Price" 
+                               ng-model="newProduct.price"/>
                     </td>
-                    <td class="text-center persons-cell">
+                    <td class="text-center persons-cell col-xs-5">
                         <div class="person-shortcut" ng-repeat="person in personsPool" ng-style="personShortcutColor(person, newProduct.persons)"
                              ng-class="personShortcutClass(person, newProduct.persons)" ng-click="toggleAddPersonToProduct(person.id, newProduct.persons)">
-                            {{person.name| personShortcut}}
+                            {{person.name| personShortcut:2}}
                         </div>
                     </td>
                 </tr>
             </tfoot>
+        </table>
+
+    </div>
+    <div class="col-md-2">
+        <table class="table table-bordered" id="persons-table">
             <tbody>
-                <tr ng-repeat="product in productsList">
-                    <td class="text-center">
-                        <span class="glyphicon glyphicon-remove custom-glyphicon" 
-                              ng-click="removeProduct($index)"></span>
-                    </td>
-                    <td>{{product.name}}</td>
-                    <td class="text-center">{{product.quantity}}</td>
-                    <td class="text-center">{{product.price| currency}}</td>
-                    <td class="text-center persons-cell">
-                        <div class="person-shortcut" ng-repeat="person in personsPool" ng-style="personShortcutColor(person, product.persons)"
-                             ng-class="personShortcutClass(person, product.persons)" ng-click="toggleAddPersonToProduct(person.id, product.persons)">
-                            {{person.name| personShortcut}}
-                        </div>
+                <tr ng-repeat="person in personsPool">
+                    <td ng-style="{'background': person.color}">
+                        <span>
+                            {{person.name}}
+                        </span>
+                        <span class="pull-right glyphicons">
+                            <span class="glyphicon glyphicon-refresh custom-glyphicon" ng-click="refreshPersonColor(person.id)"></span>
+                            <span class="glyphicon glyphicon-remove custom-glyphicon" ng-click="removePerson(person.id)"></span>
+                        </span>
                     </td>
                 </tr>
             </tbody>
-        </table>
-    </div>
-    <div class="col-md-2">
-        <table class="table table-bordered">
-            <tr ng-repeat="person in personsPool">
-                <td ng-style="{
-                            'background': person.color}">{{person.name}}</td>
-            </tr>
+            <tfoot>
+                <tr ng-keypress="addPersonShortcutKey(newPerson, $event)" tabindex="0">
+                    <td>
+                        <div class="input-group">
+                            <input class="form-control custom-input" placeholder="Name" ng-model="newPerson.name"/>
+                            <span class="input-group-addon" id="add-person-button">
+                                <span class="glyphicon glyphicon-floppy-save custom-glyphicon" 
+                                      ng-click="addPerson(newPerson)" ng-init="refreshNewPerson()">
+
+                                </span>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>
+<!--<pre>{{productsList| json}}</pre>-->

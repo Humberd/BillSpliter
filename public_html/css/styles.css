@@ -1,18 +1,3 @@
-/*.small-padding {
-  padding: 0.3em !important
-}
-.short-person {
-  border-radius: 50%;
-  background-color: pink;
-  text-align: center;
-  vertical-align: text-bottom;
-  border: 1px solid black;
-  font-size: 1.2em;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
-  margin: 0 2px;
-}*/
 .person-shortcut {
     display: inline-block;
     margin: 0 3px;
@@ -45,6 +30,46 @@ input.custom-input {
     padding: 0 10px;
     height: 25px;
 }
+input.custom-input.custom-input-small {
+    padding: 0 5px;
+}
 .table-form:focus {
     outline: none;
 }
+#products-table-body,
+#products-table-foot,
+#products-table{
+    table-layout: fixed;
+}
+#products-table-body td:not(.persons-cell),
+#products-table-foot td:not(.persons-cell),
+#products-table td:not(.persons-cell),
+#products-table th{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+table {
+    margin-bottom: 0 !important;
+}
+.fixed-bot {
+    position: fixed;
+    bottom: 0;
+}
+.glyphicons > .glyphicon {
+    margin-left: 5px;
+}
+#add-person-button {
+    padding: 0;
+    padding-left: 7px;
+    background: inherit;
+    border: inherit;
+}
+.row {
+    margin: 0 !important;
+}
+#products-table-body-div {
+    max-height: 91.25vh;
+    overflow-y: auto;
+}
+

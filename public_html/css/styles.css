@@ -69,7 +69,36 @@ table {
     margin: 0 !important;
 }
 #products-table-body-div {
-    max-height: 91.25vh;
+    max-height: 82vh;
     overflow-y: auto;
 }
+#summary-button {
+    margin: 20px;
+    padding: 10px;
+}
 
+.summary-box {
+    padding: 7px 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    color: #fff;
+}
+
+.center.navbar .nav,
+.center.navbar .nav > li {
+    float:none;
+    display:inline-block;
+    *display:inline; /* ie7 fix */
+    *zoom:1; /* hasLayout ie7 trigger */
+    vertical-align: top;
+}
+
+.center .navbar-inner {
+    text-align:center;
+}
+
+#back-button {
+    margin: 0 15px;
+    width: 100px;
+}

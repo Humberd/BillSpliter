@@ -1,0 +1,15 @@
+<div ng-init="summary()">
+    <div class="container">
+        <div>
+            <a ng-href="#/home" class="btn btn-warning" id="back-button">Back</a>
+        </div>
+        <div class="row">
+            <div class="col-md-2" ng-repeat="person in personsPool">
+                <div class="summary-box text-center" ng-style="{background: person.color}">
+                    <h4>{{person.name}}</h4>
+                    <h3><strong>{{person.contribution | currency}}</strong></h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

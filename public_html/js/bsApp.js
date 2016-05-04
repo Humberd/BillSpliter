@@ -23,33 +23,35 @@ app.controller("mainCtrl", function ($scope, idService) {
         quantity: 5,
         persons: [1]
     };
-    $scope.productsList = [{
-            id: idService.getNextProductId(),
-            name: "Pepsi",
-            price: 4.99,
-            quantity: 6,
-            persons: [1, 2, 3]
-        }, {
-            id: idService.getNextProductId(),
-            name: "Kukurydza",
-            price: 2.49,
-            quantity: 2,
-            persons: [1]
-        }];
-    $scope.personsPool = [{
-            id: idService.getNextPersonId(),
-            name: "Sawik",
-            color: Please.make_color()
-        }, {
-            id: idService.getNextPersonId(),
-            name: "Misiek",
-            color: Please.make_color()
-        }, {
-            id: idService.getNextPersonId(),
-            name: "Mścich",
-            color: Please.make_color()
-        }];
-
+//    $scope.productsList = [{
+//            id: idService.getNextProductId(),
+//            name: "Pepsi",
+//            price: 4.99,
+//            quantity: 6,
+//            persons: [1, 2, 3]
+//        }, {
+//            id: idService.getNextProductId(),
+//            name: "Kukurydza",
+//            price: 2.49,
+//            quantity: 2,
+//            persons: [1]
+//        }];
+    $scope.productsList = [];
+//    $scope.personsPool = [{
+//            id: idService.getNextPersonId(),
+//            name: "Sawik",
+//            color: Please.make_color()
+//        }, {
+//            id: idService.getNextPersonId(),
+//            name: "Misiek",
+//            color: Please.make_color()
+//        }, {
+//            id: idService.getNextPersonId(),
+//            name: "Mścich",
+//            color: Please.make_color()
+//        }];
+    $scope.personsPool = [];
+///////////////
     $scope.addPerson = function (person) {
         if (angular.isDefined(person) && angular.isString(person.name)) {
             person.id = idService.getNextPersonId();
@@ -80,9 +82,9 @@ app.controller("mainCtrl", function ($scope, idService) {
     };
     $scope.addProduct = function (product) {
         try {
-//            product.quantity = $scope.validateNumber(product.quantity);
-//            product.price = $scope.validateNumber(product.price);
-//            product.name = $scope.validateString(product.name);
+            product.quantity = $scope.validateNumber(product.quantity);
+            product.price = $scope.validateNumber(product.price);
+            product.name = $scope.validateString(product.name);
             product.id = idService.getNextProductId();
             $scope.productsList.push(angular.copy(product));
             $scope.refreshNewProduct();
@@ -94,7 +96,7 @@ app.controller("mainCtrl", function ($scope, idService) {
     $scope.removeProduct = function (index) {
         $scope.productsList.splice(index, 1);
     };
-
+//////////////////////////
     $scope.toggleAddPersonToProduct = function (id, idPool) {
         for (var p in idPool) {
             if (idPool[p] == id) {
@@ -125,10 +127,14 @@ app.controller("mainCtrl", function ($scope, idService) {
         }
         return "not-participant";
     };
-
+/////////////////////////////
     $scope.refreshNewProduct = function () {
         if (angular.isDefined($scope.newProduct)) {
-            var persons = angular.copy($scope.newProduct.persons);
+            var persons = $scope.newProduct.persons.filter(function (person) {
+                return $scope.personsPool.some(function (poolPerson) {
+                    return poolPerson.id === person.id;
+                });
+            });
         } else {
             var persons = [];
             for (var i in $scope.personsPool) {
@@ -149,6 +155,15 @@ app.controller("mainCtrl", function ($scope, idService) {
         };
     };
 
+    $scope.refreshPersonColor = function (id) {
+        for (var p in $scope.personsPool) {
+            if ($scope.personsPool[p].id == id) {
+                $scope.personsPool[p].color = Please.make_color();
+                return;
+            }
+        }
+    };
+///////////////////////
     $scope.addProductShortcutKey = function (newProduct, event) {
         if (event.keyCode === 13) {
             $scope.addProduct(newProduct);
@@ -160,16 +175,7 @@ app.controller("mainCtrl", function ($scope, idService) {
             $scope.addPerson(newPerson);
         }
     };
-
-    $scope.refreshPersonColor = function (id) {
-        for (var p in $scope.personsPool) {
-            if ($scope.personsPool[p].id == id) {
-                $scope.personsPool[p].color = Please.make_color();
-                return;
-            }
-        }
-    };
-
+//////////////////
     $scope.validateNumber = function (value) {
         if (angular.isNumber(value)) {
             return value;
@@ -193,5 +199,37 @@ app.controller("mainCtrl", function ($scope, idService) {
         } else {
             throw "not a string";
         }
+    };
+/////////////
+    $scope.summary = function () {
+        var persons = $scope.personsPool;
+        for (var p in persons) {
+            persons[p].contribution = 0;
+        }
+
+        var products = $scope.productsList;
+
+        for (var p in products) {
+            var list = products[p].persons;
+            var totalProductPrice = products[p].price * products[p].quantity;
+            var partialContribution = totalProductPrice / list.length;
+            for (var l in list) {
+                for (q in persons) {
+                    if (persons[q].id == list[l]) {
+                        persons[q].contribution += partialContribution;
+                        break;
+                    }
+                }
+            }
+        }
+    };
+//////////////
+    $scope.clear = function () {
+        $scope.personsPool = [];
+        $scope.productsList = [];
+    };
+    
+    $scope.toggleDebugMode = function () {
+        $scope.debugMode = !$scope.debugMode;
     };
 });

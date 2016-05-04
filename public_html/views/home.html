@@ -10,33 +10,6 @@
                     <th class="col-xs-5 text-center">Persons</th>
                 </tr>
             </thead>
-            <!--            <tfoot>
-                            <tr class="table-form" ng-keypress="addProductShortcutKey(newProduct, $event)" tabindex="0">
-                                <td class="text-center col-xs-1">
-                                    <span class="glyphicon glyphicon-floppy-save custom-glyphicon" 
-                                          ng-click="addProduct(newProduct)" ng-init="refreshNewProduct()"></span>
-                                </td>
-                                <td class="col-xs-3">
-                                    <input class="form-control custom-input" placeholder="Name" ng-model="newProduct.name"/>
-                                </td>
-                                <td class="col-xs-1">
-                                    <input class="form-control custom-input custom-input-small text-center" placeholder="Qty" 
-                                           ng-model="newProduct.quantity"/>
-                                </td>
-                                <td class="col-xs-2">
-                                    <input class="form-control custom-input custom-input-small text-center" placeholder="Price" 
-                                           ng-model="newProduct.price"/>
-                                </td>
-                                <td class="text-center persons-cell col-xs-5">
-                                    <div class="person-shortcut" ng-repeat="person in personsPool" ng-style="personShortcutColor(person, newProduct.persons)"
-                                         ng-class="personShortcutClass(person, newProduct.persons)" ng-click="toggleAddPersonToProduct(person.id, newProduct.persons)">
-                                        {{person.name| personShortcut}}
-                                    </div>
-                                </td>
-                            </tr>
-                        </tfoot>-->
-            <!--            <tbody>
-                        </tbody>-->
         </table>
         <div id="products-table-body-div">
             <table class="table table-bordered" id="products-table-body">
@@ -104,7 +77,7 @@
                 </tr>
             </tbody>
             <tfoot>
-                <tr ng-keypress="addPersonShortcutKey(newPerson, $event)" tabindex="0">
+                <tr ng-keypress="addPersonShortcutKey(newPerson, $event)">
                     <td>
                         <div class="input-group">
                             <input class="form-control custom-input" placeholder="Name" ng-model="newPerson.name"/>
@@ -119,6 +92,14 @@
                 </tr>
             </tfoot>
         </table>
+        <div class="text-center" id="summary-button">
+            <a class="btn btn-success" ng-href="#/summary">
+                Summary
+            </a>
+        </div>
     </div>
 </div>
-<!--<pre>{{productsList| json}}</pre>-->
+<div class="row" ng-show="debugMode">
+    <div class="col-xs-8"><pre>{{productsList| json}}</pre></div>
+    <div class="col-xs-4"><pre>{{personsPool|json}}</pre></div>
+</div>

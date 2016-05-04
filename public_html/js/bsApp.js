@@ -1,16 +1,17 @@
-var app = angular.module("bsApp", ["ngRoute"]);
-app.config(function ($routeProvider) {
+var app = angular.module("bsApp", ["ngRoute", "ngCookies"]);
+app.config(function ($routeProvider, $cookiesProvider) {
     $routeProvider.when("/", {
         templateUrl: "./views/home.html"
     });
     $routeProvider.when("/summary", {
         templateUrl: "./views/summary.html"
-    }),
-            $routeProvider.otherwise({
-                templateUrl: "./views/home.html"
-            });
+    });
+    $routeProvider.otherwise({
+        templateUrl: "./views/home.html"
+    });
 });
-app.controller("mainCtrl", function ($scope, idService) {
+app.controller("mainCtrl", function ($scope, idService, $cookies) {
+    console.log($cookies);
     $scope.person = {
         id: 1,
         name: "Humberd",
@@ -228,7 +229,7 @@ app.controller("mainCtrl", function ($scope, idService) {
         $scope.personsPool = [];
         $scope.productsList = [];
     };
-    
+
     $scope.toggleDebugMode = function () {
         $scope.debugMode = !$scope.debugMode;
     };

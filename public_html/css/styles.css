@@ -1,4 +1,4 @@
-.small-padding {
+/*.small-padding {
   padding: 0.3em !important
 }
 .short-person {
@@ -12,4 +12,39 @@
   height: 30px;
   display: inline-block;
   margin: 0 2px;
+}*/
+.person-shortcut {
+    display: inline-block;
+    margin: 0 3px;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    padding: 5px;
+    -webkit-transition: all 0.2s;
+}
+.person-shortcut:hover {
+    cursor: pointer;
+    -webkit-filter: brightness(0.7);
+}
+.persons-cell {
+    padding-top: 3px !important;
+    padding-bottom: 0 !important;
+}
+.custom-glyphicon {
+    opacity: 0.4;
+    -webkit-transition: all 0.1s;
+}
+.custom-glyphicon:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+input.custom-input {
+    background: #1c1c1c;
+    border: 1px solid #3f3f3f;
+    color: #fff;
+    padding: 0 10px;
+    height: 25px;
+}
+.table-form:focus {
+    outline: none;
 }

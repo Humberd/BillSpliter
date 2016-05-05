@@ -8,7 +8,6 @@
         "client",
         "browser"
     ],
-    "main": "public_html/index.html",
     "author": "Sawik",
     "contributors": [
     ],

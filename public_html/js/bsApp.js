@@ -1,5 +1,5 @@
 var app = angular.module("bsApp", ["ngRoute", "ngCookies"]);
-app.config(function ($routeProvider, $cookiesProvider) {
+app.config(function ($routeProvider) {
     $routeProvider.when("/", {
         templateUrl: "./views/home.html"
     });
@@ -11,7 +11,6 @@ app.config(function ($routeProvider, $cookiesProvider) {
     });
 });
 app.controller("mainCtrl", function ($scope, idService, $cookies) {
-    console.log($cookies);
     $scope.person = {
         id: 1,
         name: "Humberd",
@@ -24,34 +23,34 @@ app.controller("mainCtrl", function ($scope, idService, $cookies) {
         quantity: 5,
         persons: [1]
     };
-//    $scope.productsList = [{
-//            id: idService.getNextProductId(),
-//            name: "Pepsi",
-//            price: 4.99,
-//            quantity: 6,
-//            persons: [1, 2, 3]
-//        }, {
-//            id: idService.getNextProductId(),
-//            name: "Kukurydza",
-//            price: 2.49,
-//            quantity: 2,
-//            persons: [1]
-//        }];
-    $scope.productsList = [];
-//    $scope.personsPool = [{
-//            id: idService.getNextPersonId(),
-//            name: "Sawik",
-//            color: Please.make_color()
-//        }, {
-//            id: idService.getNextPersonId(),
-//            name: "Misiek",
-//            color: Please.make_color()
-//        }, {
-//            id: idService.getNextPersonId(),
-//            name: "Mścich",
-//            color: Please.make_color()
-//        }];
-    $scope.personsPool = [];
+    $scope.productsList = [{
+            id: idService.getNextProductId(),
+            name: "Pepsi",
+            price: 4000.99,
+            quantity: 6,
+            persons: [1, 2, 3]
+        }, {
+            id: idService.getNextProductId(),
+            name: "Kukurydza",
+            price: 2.49,
+            quantity: 2,
+            persons: [1]
+        }];
+//    $scope.productsList = [];
+    $scope.personsPool = [{
+            id: idService.getNextPersonId(),
+            name: "Sawik",
+            color: Please.make_color()
+        }, {
+            id: idService.getNextPersonId(),
+            name: "Misiek",
+            color: Please.make_color()
+        }, {
+            id: idService.getNextPersonId(),
+            name: "Mścich",
+            color: Please.make_color()
+        }];
+//    $scope.personsPool = [];
 ///////////////
     $scope.addPerson = function (person) {
         if (angular.isDefined(person) && angular.isString(person.name)) {
@@ -83,9 +82,9 @@ app.controller("mainCtrl", function ($scope, idService, $cookies) {
     };
     $scope.addProduct = function (product) {
         try {
-            product.quantity = $scope.validateNumber(product.quantity);
-            product.price = $scope.validateNumber(product.price);
-            product.name = $scope.validateString(product.name);
+//            product.quantity = $scope.validateNumber(product.quantity);
+//            product.price = $scope.validateNumber(product.price);
+//            product.name = $scope.validateString(product.name);
             product.id = idService.getNextProductId();
             $scope.productsList.push(angular.copy(product));
             $scope.refreshNewProduct();

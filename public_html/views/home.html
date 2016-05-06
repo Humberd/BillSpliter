@@ -14,7 +14,7 @@
         <div id="products-table-body-div">
             <table class="table table-bordered" id="products-table-body">
                 <tbody>
-                    <tr ng-repeat="product in productsList">
+                    <tr ng-repeat="product in data.productsList">
                         <td class="text-center col-xs-1 cell-small">
                             <span class="glyphicon glyphicon-remove custom-glyphicon" 
                                   ng-click="removeProduct($index)"></span>
@@ -23,7 +23,7 @@
                         <td class="text-center col-xs-1 cell-small">{{product.quantity}}</td>
                         <td class="text-center col-xs-2 cell-small">{{product.price| currency}}</td>
                         <td class="text-center persons-cell col-xs-5">
-                            <div class="person-shortcut" ng-repeat="person in personsPool" ng-style="personShortcutColor(person, product.persons)"
+                            <div class="person-shortcut" ng-repeat="person in data.personsPool" ng-style="personShortcutColor(person, product.persons)"
                                  ng-class="personShortcutClass(person, product.persons)" ng-click="toggleAddPersonToProduct(person.id, product.persons)">
                                 {{person.name| personShortcut:2}}
                             </div>
@@ -53,7 +53,7 @@
                                    ng-model="newProduct.price"/>
                         </td>
                         <td class="text-center persons-cell col-xs-5 col-xs-offset-7">
-                            <div class="person-shortcut" ng-repeat="person in personsPool" ng-style="personShortcutColor(person, newProduct.persons)"
+                            <div class="person-shortcut" ng-repeat="person in data.personsPool" ng-style="personShortcutColor(person, newProduct.persons)"
                                  ng-class="personShortcutClass(person, newProduct.persons)" ng-click="toggleAddPersonToProduct(person.id, newProduct.persons)">
                                 {{person.name| personShortcut:2}}
                             </div>
@@ -66,7 +66,7 @@
     <div class="col-md-2 persons-column">
         <table class="table table-bordered" id="persons-table">
             <tbody>
-                <tr ng-repeat="person in personsPool">
+                <tr ng-repeat="person in data.personsPool">
                     <td ng-style="{'background': person.color}">
                         <span>
                             {{person.name}}
@@ -102,6 +102,7 @@
     </div>
 </div>
 <div class="row" ng-show="debugMode">
-    <div class="col-xs-8"><pre>{{productsList| json}}</pre></div>
-    <div class="col-xs-4"><pre>{{personsPool|json}}</pre></div>
+    <div class="col-xs-12"><pre>{{data | json}}</pre></div>
+    <div class="col-xs-8"><pre>{{data.productsList| json}}</pre></div>
+    <div class="col-xs-4"><pre>{{data.personsPool|json}}</pre></div>
 </div>

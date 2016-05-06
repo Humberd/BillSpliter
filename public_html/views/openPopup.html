@@ -1,0 +1,33 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">Saved Files</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table table-bordered table-inverse">
+            <thead>
+                <tr>
+                    <th class="col-xs-3">Title</th>
+                    <th class="col-xs-4">Last Modified</th>
+                </tr>
+            </thead>
+        </table>
+        <div id="open-popup-table">
+            <table class="table table-bordered table-inverse">
+                <tbody>
+                    <tr ng-repeat="bill in billsList" ng-dblclick="open()"
+                        ng-click="select(bill)" ng-class="{'selected-bill': bill.id === selected.bill.id}">
+                        <td class="col-xs-3"><strong>{{bill.title}}</strong></td>
+                        <td class="col-xs-4">
+                            <span>{{bill.editDate| date:"dd/MM/yyyy HH:mm"}}</span>
+                            <span><small>({{bill.editDate | timeAgo}})</small></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="open()" ng-disabled="!selected.bill">Open</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

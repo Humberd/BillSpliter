@@ -12,12 +12,23 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
             <div class="navbar-left">
-                <button type="button" class="btn btn-info navbar-btn" ng-click="clear()">Clear</button>
+                <button type="button" class="btn btn-info navbar-btn" ng-click="newBill()">
+                    New
+                </button>
+                <button type="button" class="btn btn-primary navbar-btn" ng-click="clear()">
+                    Clear
+                </button>
             </div>
             <div class="navbar-right">
-                <button type="button" class="btn btn-danger navbar-btn" ng-click="toggleDebugMode()">Debug Mode</button>
-                <button type="button" class="btn btn-warning navbar-btn">Save</button>
-                <button type="button" class="btn btn-primary navbar-btn">Open</button>
+                <button type="button" class="btn btn-danger navbar-btn" ng-click="toggleDebugMode()">
+                    Debug Mode
+                </button>
+                <button type="button" class="btn btn-warning navbar-btn" ng-click="save()">
+                    Save
+                </button>
+                <button type="button" class="btn btn-primary navbar-btn" ng-click="open()">
+                    Open
+                </button>
             </div>
         </div>
     </div>

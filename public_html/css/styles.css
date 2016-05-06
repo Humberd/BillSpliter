@@ -133,3 +133,19 @@ table {
 .product-price {
     min-width: 70px !important;
 }
+table.table-inverse,
+.inverse{
+    background-color: #fff !important;
+    color: #000 !important;
+}
+table.table-inverse > tbody > tr:hover {
+    background-color: #939393;
+    cursor: pointer;
+}
+#open-popup-table {
+    max-height: 50vh;
+    overflow-y: auto;
+}
+.selected-bill {
+    background-color: #6bb0f0 !important;
+}

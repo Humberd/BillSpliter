@@ -8,7 +8,7 @@
             </div>-->
         </div>
         <div class="row">
-            <div class="col-md-2 summary-box-outer" ng-repeat="person in personsPool">
+            <div class="col-md-2 summary-box-outer" ng-repeat="person in data.personsPool">
                 <div class="text-center summary-box" ng-style="{background: person.color}">
                     <h4>{{person.name}}</h4>
                     <h3><strong>{{person.contribution | currency}}</strong></h4>

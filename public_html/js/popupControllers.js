@@ -31,4 +31,14 @@ app.controller("openPopupCtrl", function ($scope, $uibModalInstance, localStorag
         $document.off('keydown', onKeydown);
     });
 });
+app.controller("confirmPopupCtrl", function ($scope, $uibModalInstance, message) {
+    $scope.message = message;
+    $scope.confirm = function () {
+        $uibModalInstance.close();
+    };
+    
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss();
+    };
+});
 

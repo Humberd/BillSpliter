@@ -1,4 +1,6 @@
-var app = angular.module("bsApp", ["ngRoute", "ngCookies", "LocalStorageModule", "ui.bootstrap", "cfp.hotkeys", "yaru22.angular-timeago"]);
+var app = angular.module("bsApp", ["ngRoute", "ngCookies",
+    "LocalStorageModule", "ui.bootstrap", "cfp.hotkeys",
+    "yaru22.angular-timeago", "ngAnimate"]);
 app.config(function ($routeProvider, localStorageServiceProvider) {
     $routeProvider.when("/", {
         templateUrl: "./views/home.html"
@@ -13,13 +15,23 @@ app.config(function ($routeProvider, localStorageServiceProvider) {
             .setPrefix("bsApp")
             .setNotify(true, true);
 });
-app.run(function (localStorageService, storageKeyName) {
+app.run(function (localStorageService, storageKeyName, $rootScope, alertService) {
     if (!angular.isArray(localStorageService.get(storageKeyName))) {
         localStorageService.set(storageKeyName, []);
     }
+    $rootScope.$on("LocalStorageModule.notification.setitem", function (message) {
+        alertService.info("Successfully updated.");
+    });
+    $rootScope.$on("LocalStorageModule.notification.error", function (message) {
+        alertService.danger("Error while updating.");
+    });
+    $rootScope.$on("LocalStorageModule.notification.removeitem", function (message) {
+        alertService.info("Successfully removed.");
+    });
 });
 app.constant("storageKeyName", "bills");
-app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorageService, storageKeyName, $uibModal, hotkeys, $location) {
+app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorageService,
+        storageKeyName, $uibModal, hotkeys, $location, alertService) {
     $scope.person = {
         id: 1,
         name: "Humberd",
@@ -32,9 +44,6 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
         quantity: 5,
         persons: [1]
     };
-//    $rootScope.$on("LocalStorageModule.notification.setitem", function (oldVal, newVal) {
-//        console.log("new");
-//    });
 //    var foo = localStorageService.set("key", [{ok: "true", k: false, dupa: {}}]);
 //    console.log(foo);
 /////////////////////////
@@ -49,32 +58,32 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
         };
     }
     defaultData();
-    $scope.data.productsList = [{
-            id: idService.getNextProductId(),
-            name: "Pepsi",
-            price: 4000.99,
-            quantity: 6,
-            persons: [1, 2, 3]
-        }, {
-            id: idService.getNextProductId(),
-            name: "Kukurydza",
-            price: 2.49,
-            quantity: 2,
-            persons: [1]
-        }];
-    $scope.data.personsPool = [{
-            id: idService.getNextPersonId(),
-            name: "Sawik",
-            color: Please.make_color()
-        }, {
-            id: idService.getNextPersonId(),
-            name: "Misiek",
-            color: Please.make_color()
-        }, {
-            id: idService.getNextPersonId(),
-            name: "Mścich",
-            color: Please.make_color()
-        }];
+//    $scope.data.productsList = [{
+//            id: idService.getNextProductId(),
+//            name: "Pepsi",
+//            price: 4000.99,
+//            quantity: 6,
+//            persons: [1, 2, 3]
+//        }, {
+//            id: idService.getNextProductId(),
+//            name: "Kukurydza",
+//            price: 2.49,
+//            quantity: 2,
+//            persons: [1]
+//        }];
+//    $scope.data.personsPool = [{
+//            id: idService.getNextPersonId(),
+//            name: "Sawik",
+//            color: Please.make_color()
+//        }, {
+//            id: idService.getNextPersonId(),
+//            name: "Misiek",
+//            color: Please.make_color()
+//        }, {
+//            id: idService.getNextPersonId(),
+//            name: "Mścich",
+//            color: Please.make_color()
+//        }];
 //    $scope.debugMode = true;
 ///////////////
     $scope.addPerson = function (person) {
@@ -264,6 +273,7 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
 
     $scope.save = function () {
         $scope.data.editDate = new Date();
+        console.log("saving...");
         var bills = localStorageService.get(storageKeyName);
         for (var b in bills) {
             if (bills[b].id == $scope.data.id) {
@@ -277,16 +287,23 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
     };
 
     $scope.open = function () {
-        var windowPromise = $uibModal.open({
-            templateUrl: "./views/openPopup.html",
-            controller: "openPopupCtrl"
-        });
-        windowPromise.result.then(function (result) {
-            $scope.data = result;
-            $location.path("/home");
-        });
+        if (!$rootScope.openPopup) {
+            $rootScope.openPopup = true;
+            var windowPromise = $uibModal.open({
+                templateUrl: "./views/openPopup.html",
+                controller: "openPopupCtrl"
+            });
+            windowPromise.result.then(function (result) {
+                $scope.data = result;
+                $location.path("/home");
+                alertService.info("Opened: "+result.title);
+            }).finally(function () {
+                $rootScope.openPopup = false;
+            });
+        }
+
     };
-    $scope.open();
+//    $scope.open();
 ////////////////HOTKEYS////////////////
     function addHotkey(combo, description, callback) {
         hotkeys.bindTo($scope).add({
@@ -299,10 +316,10 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
             }
         });
     }
-    addHotkey("ctrl+o","Open saved bills", $scope.open);
-    addHotkey("ctrl+s","Save bill", $scope.save);
-    addHotkey("ctrl+m","New bill", $scope.newBill);
-    addHotkey("ctrl+d","Debug mode", $scope.toggleDebugMode);
-    addHotkey("ctrl+k","Clear current bill (same bill, but empty)", $scope.clear);
+    addHotkey("ctrl+o", "Open saved bills", $scope.open);
+    addHotkey("ctrl+s", "Save bill", $scope.save);
+    addHotkey("ctrl+m", "New bill", $scope.newBill);
+    addHotkey("ctrl+d", "Debug mode", $scope.toggleDebugMode);
+    addHotkey("ctrl+k", "Clear current bill (same bill, but empty)", $scope.clear);
 //////////////////////////////////////
 });

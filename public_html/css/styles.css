@@ -149,3 +149,53 @@ table.table-inverse > tbody > tr:hover {
 .selected-bill {
     background-color: #6bb0f0 !important;
 }
+.center {
+    text-align: center !important;
+}
+.popup-button {
+    width: 100px;
+}
+.custom-alert {
+    opacity: 1;
+    /*    white-space: normal;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        max-height: 15vh;*/
+}
+.custom-alert.ng-leave {
+    transition: 0.5s;
+    opacity: 1;
+}
+.custom-alert.ng-leave-active {
+    opacity: 0;
+}
+.custom-alert div[ng-transclude] {
+    white-space: normal;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    max-height: 15vh;
+}
+#alerts-box {
+    position: fixed;
+    z-index: 1000;
+    bottom: 10px;
+    right: 10px;
+    width: 40vw;
+    max-height: 50%;
+    overflow-y: auto;
+    /*max-width: 40%;*/
+}
+@media (max-width: 768px){
+    #alerts-box {
+        width: 98%;
+    }
+    #alerts-box >div div {
+    margin-bottom: 2px;
+}
+}
+#alerts-box >div:last-child div {
+    margin-bottom: 0px;
+}
+#products-table-foot {
+    overflow-x: auto;
+}

@@ -1,0 +1,7 @@
+<div id="alerts-box">
+    <div data-ng-repeat="alert in alerts | orderBy:'-'" class="custom-alert">
+        <uib-alert type="{{alert.type}}" close="close(alert.id)" dismiss-on-timeout="{{alert.timeout >0?alert.timeout:''}}">
+            {{alert.message}}
+        </uib-alert>
+    </div>
+</div>

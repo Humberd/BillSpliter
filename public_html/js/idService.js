@@ -3,6 +3,7 @@ app.service("idService", function () {
     var nextPersonId = 1;
     var nextProductId = 1;
     var nextDataId = 1;
+    var nextAlertId = 1;
     return {
         getNextPersonId: function () {
             return nextPersonId++;
@@ -12,6 +13,9 @@ app.service("idService", function () {
         },
         getNextDataId: function () {
             return nextDataId++;
+        },
+        getNextAlertId: function () {
+            return nextAlertId++;
         },
         setnextPersonId: function (id) {
             if (angular.isNumber(id)) {
@@ -26,6 +30,11 @@ app.service("idService", function () {
         setNextDataId: function (id) {
             if (angular.isNumber(id)) {
                 nextDataId = id;
+            }
+        },
+        setNextAlertId: function (id) {
+            if (angular.isNumber(id)) {
+                nextAlertId = id;
             }
         }
     };

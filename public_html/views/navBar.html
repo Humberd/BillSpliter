@@ -20,10 +20,13 @@
                 </button>
             </div>
             <div class="navbar-right">
+                <button type="button" class="btn btn-primary navbar-btn" ng-click="addAlert()">
+                    Generate alert
+                </button>
                 <button type="button" class="btn btn-danger navbar-btn" ng-click="toggleDebugMode()">
                     Debug Mode
                 </button>
-                <button type="button" class="btn btn-warning navbar-btn" ng-click="save()">
+                <button type="button" class="btn btn-warning navbar-btn" ng-confirm-click="save()">
                     Save
                 </button>
                 <button type="button" class="btn btn-primary navbar-btn" ng-click="open()">

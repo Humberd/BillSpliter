@@ -1,6 +1,6 @@
 var app = angular.module("bsApp", ["ngRoute", "ngCookies",
     "LocalStorageModule", "ui.bootstrap", "cfp.hotkeys",
-    "yaru22.angular-timeago", "ngAnimate"]);
+    "yaru22.angular-timeago", "ngAnimate", "xeditable"]);
 app.config(function ($routeProvider, localStorageServiceProvider) {
     $routeProvider.when("/", {
         templateUrl: "./views/home.html"
@@ -15,7 +15,8 @@ app.config(function ($routeProvider, localStorageServiceProvider) {
             .setPrefix("bsApp")
             .setNotify(true, true);
 });
-app.run(function (localStorageService, storageKeyName, $rootScope, alertService) {
+app.run(function (localStorageService, storageKeyName, $rootScope, alertService,
+        editableOptions, editableThemes) {
     if (!angular.isArray(localStorageService.get(storageKeyName))) {
         localStorageService.set(storageKeyName, []);
     }
@@ -28,6 +29,9 @@ app.run(function (localStorageService, storageKeyName, $rootScope, alertService)
     $rootScope.$on("LocalStorageModule.notification.removeitem", function (message) {
         alertService.info("Successfully removed.");
     });
+    editableThemes.bs3.imputClass = "input-sm";
+    editableThemes.bs3.buttonsClass = 'btn-sm';
+    editableOptions.theme = "bs3";
 });
 app.constant("storageKeyName", "bills");
 app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorageService,
@@ -35,7 +39,9 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
     $scope.person = {
         id: 1,
         name: "Humberd",
-        color: "#FFAA55"
+        color: "#FFAA55",
+        paid: false,
+        contribution: 0
     };
     $scope.product = {
         id: 1,
@@ -53,6 +59,7 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
             title: "defaultTitle",
             createDate: new Date(),
             editDate: new Date(),
+            total: 0,
             productsList: [],
             personsPool: []
         };
@@ -74,24 +81,38 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
 //    $scope.data.personsPool = [{
 //            id: idService.getNextPersonId(),
 //            name: "Sawik",
-//            color: Please.make_color()
+//            color: Please.make_color(),
+//            paid: false,
+//            contribution: 0
 //        }, {
 //            id: idService.getNextPersonId(),
 //            name: "Misiek",
-//            color: Please.make_color()
+//            color: Please.make_color(),
+//            paid: true,
+//            contribution: 0
 //        }, {
 //            id: idService.getNextPersonId(),
 //            name: "Mścich",
-//            color: Please.make_color()
+//            color: Please.make_color(),
+//            paid: false,
+//            contribution: 0
 //        }];
 //    $scope.debugMode = true;
 ///////////////
     $scope.addPerson = function (person) {
-        if (angular.isDefined(person) && angular.isString(person.name)) {
-            person.id = idService.getNextPersonId();
-            person.color = Please.make_color();
-            $scope.data.personsPool.push(person);
-            $scope.refreshNewPerson();
+        if (angular.isDefined(person)) {
+            try {
+                person.name = $scope.validateString(person.name);
+                person.id = idService.getNextPersonId();
+                person.color = Please.make_color();
+                person.paid = false;
+                person.contribution = 0;
+                $scope.data.personsPool.push(person);
+                $scope.refreshNewPerson();
+            } catch (err) {
+                alertService.warning(err);
+            }
+
         }
     };
     $scope.removePerson = function (id) {
@@ -116,13 +137,14 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
     };
     $scope.addProduct = function (product) {
         try {
-            product.quantity = $scope.validateNumber(product.quantity);
-            product.price = $scope.validateNumber(product.price);
-            product.name = $scope.validateString(product.name);
+//            product.name = $scope.validateString(product.name);
+//            product.quantity = $scope.validateNumber(product.quantity);
+//            product.price = $scope.validateNumber(product.price);
             product.id = idService.getNextProductId();
             $scope.data.productsList.push(angular.copy(product));
             $scope.refreshNewProduct();
         } catch (err) {
+            alertService.warning(err);
             console.log(err);
         }
 
@@ -140,7 +162,7 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
         }
         idPool.push(id);
     };
-
+    
     $scope.personShortcutColor = function (person, idPool) {
         var result = {};
         for (var p in idPool) {
@@ -211,6 +233,7 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
     };
 //////////////////
     $scope.validateNumber = function (value) {
+        var errorMessage = "'" + value + "' is not a number";
         if (angular.isNumber(value)) {
             return value;
         }
@@ -219,21 +242,37 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
             value = parseFloat(value, 10);
 //            console.log(value);
             if (isNaN(value)) {
-                throw "not a number";
+                throw errorMessage;
             } else {
                 return value;
             }
         }
-        throw "not a number";
+        throw errorMessage;
     };
 
     $scope.validateString = function (string) {
+        var errorMessage = "'" + string + "' is not a string";
         if (angular.isString(string)) {
-            return string;
+            string = string.trim();
+            if (string.length > 0) {
+                return string;
+            } else {
+                throw errorMessage;
+            }
         } else {
-            throw "not a string";
+            throw errorMessage;
         }
     };
+
+    $scope.validateStringXeditable = function (string) {
+        try {
+            $scope.validateString(string);
+            return null;
+        } catch (err) {
+            return err;
+        }
+    };
+
 /////////////
     $scope.summary = function () {
         var persons = $scope.data.personsPool;
@@ -242,10 +281,12 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
         }
 
         var products = $scope.data.productsList;
+        var total = 0;
 
         for (var p in products) {
             var list = products[p].persons;
             var totalProductPrice = products[p].price * products[p].quantity;
+            total += totalProductPrice;
             var partialContribution = totalProductPrice / list.length;
             for (var l in list) {
                 for (q in persons) {
@@ -256,6 +297,14 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
                 }
             }
         }
+        $scope.data.total = total;
+    };
+    $scope.calculatePercentContribution = function (value) {
+        if (angular.isNumber(value) && angular.isNumber($scope.data.total)) {
+            var percent = $scope.data.total / value;
+            return percent * 10;
+        }
+        return 0;
     };
 ///////////////////////////////////
     $scope.newBill = function () {
@@ -296,7 +345,7 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
             windowPromise.result.then(function (result) {
                 $scope.data = result;
                 $location.path("/home");
-                alertService.info("Opened: "+result.title);
+                alertService.info("Opened: " + result.title);
             }).finally(function () {
                 $rootScope.openPopup = false;
             });

@@ -1,17 +1,36 @@
 <div ng-init="summary()">
     <div class="container">
         <div class="summary-header">
-            <a ng-href="#/home" class="btn btn-warning" id="back-button">Back</a>
-<!--            <div class="pull-right">
-                <h4>Total:</h4>
-                <h3><strong>Dupa</strong></h3>
-            </div>-->
+            <div>
+                <a ng-href="#/home" class="btn btn-warning" id="back-button">Back</a>
+            </div>
+            <div class="pull-right summary-total">
+                <div id="summary-total-name">
+                    Total:
+                </div>
+                <div id="summary-total-value">
+                    {{data.total| currency}}
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-2 summary-box-outer" ng-repeat="person in data.personsPool">
                 <div class="text-center summary-box" ng-style="{background: person.color}">
-                    <h4>{{person.name}}</h4>
-                    <h3><strong>{{person.contribution | currency}}</strong></h4>
+                    <div>
+                        <h4>
+                            {{person.name}}
+                            <span class="label paid-badge" ng-class="person.paid ? 'label-primary' : 'label-default'"
+                                  ng-click="person.paid = !person.paid">
+                                {{person.paid?'Paid':'Not Paid'}}
+                            </span>
+                        </h4>
+                    </div>
+                    <div>
+                        <h3>
+                            <strong>{{person.contribution| currency}}</strong>
+                            <span class="contribution-percent">({{calculatePercentContribution(person.contribution) | number: 2}}%)</span>
+                        </h3>
+                    </div>
                 </div>
             </div>
         </div>

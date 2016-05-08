@@ -109,9 +109,17 @@ table {
     overflow: auto;
     height: 100%;
     vertical-align: middle;
+    color: white;
 }
-.summary-header > div {
+.summary-header div {
     display: inline-block;
+}
+#summary-total-name {
+    font-size: 18px;
+}
+#summary-total-value {
+    margin-left: 10px;
+    font-size: 30px;
 }
 @media (max-width: 1250px) {
     table.table tr td.cell-small {
@@ -187,11 +195,11 @@ table.table-inverse > tbody > tr:hover {
 }
 @media (max-width: 768px){
     #alerts-box {
-        width: 98%;
+        width: 96%;
     }
-    #alerts-box >div div {
-    margin-bottom: 2px;
-}
+    #alerts-box > div div {
+        margin-bottom: 2px;
+    }
 }
 #alerts-box >div:last-child div {
     margin-bottom: 0px;
@@ -199,3 +207,39 @@ table.table-inverse > tbody > tr:hover {
 #products-table-foot {
     overflow-x: auto;
 }
+.home-title-bar {
+    color: #fff;
+    padding: 5px;
+    border-bottom: 1px solid #5e5e5e;
+    margin-bottom: 15px;
+    overflow-x: auto;
+}
+.home-title-bar > * {
+    display: inline-block;
+}
+.title {
+    font-size: 30px;
+}
+.editable-click {
+    border-bottom: none !important;
+    color: inherit !important;
+}
+.custom-tooltip > .tooltip-inner {
+    background-color: white;
+    color: black;
+}
+.custom-tooltip > .tooltip-arrow {
+    border-top-color: white !important;
+}
+.contribution-percent {
+    font-size: 0.5em;
+}
+.label.paid-badge {
+    position: relative;
+    left: 10px;
+    font-size: 15px;
+    vertical-align: middle;
+    box-shadow: 0 0 10px #3f3f3f;
+    cursor: pointer;
+}
+

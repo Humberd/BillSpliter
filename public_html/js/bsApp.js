@@ -16,10 +16,12 @@ app.config(function ($routeProvider, localStorageServiceProvider) {
             .setNotify(true, true);
 });
 app.run(function (localStorageService, storageKeyName, $rootScope, alertService,
-        editableOptions, editableThemes) {
+        editableOptions, editableThemes, idService, storageTempSaveName) {
+            
     if (!angular.isArray(localStorageService.get(storageKeyName))) {
         localStorageService.set(storageKeyName, []);
     }
+
     $rootScope.$on("LocalStorageModule.notification.setitem", function (message) {
         alertService.info("Successfully updated.");
     });
@@ -29,13 +31,46 @@ app.run(function (localStorageService, storageKeyName, $rootScope, alertService,
     $rootScope.$on("LocalStorageModule.notification.removeitem", function (message) {
         alertService.info("Successfully removed.");
     });
+
+    //zmienne do xeditable
     editableThemes.bs3.imputClass = "input-sm";
     editableThemes.bs3.buttonsClass = 'btn-sm';
     editableOptions.theme = "bs3";
+
+    ////szukam w zapisanego rachunku z najwiekszym numerem
+    var tempList = localStorageService.get(storageKeyName);
+    var tempSaved = localStorageService.get(storageTempSaveName);
+    if (tempSaved) {
+        tempList.push(tempSaved);
+    }
+    idService.setNextDataId(findHighestId(tempList) + 1);
+    /////
+    function findHighestId(array) {
+        if (!angular.isArray(array)) {
+            throw "not an array";
+        }
+        var maxId = 1;
+        for (var a in array) {
+            if (array[a].id > maxId) {
+                maxId = array[a].id;
+            }
+        }
+        return maxId;
+    }
+
 });
 app.constant("storageKeyName", "bills");
+app.constant("storageTempSaveName", "temp");
 app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorageService,
-        storageKeyName, $uibModal, hotkeys, $location, alertService) {
+        storageKeyName, $uibModal, hotkeys, $location, alertService, storageTempSaveName, $window) {
+
+    //zapisuje obecny rachunek do localStorage
+    $window.addEventListener("beforeunload", function (value) {
+        $scope.$apply(function () {
+            localStorageService.set(storageTempSaveName, $scope.data);
+        });
+    });
+//////////////////////
     $scope.person = {
         id: 1,
         name: "Humberd",
@@ -50,10 +85,10 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
         quantity: 5,
         persons: [1]
     };
-//    var foo = localStorageService.set("key", [{ok: "true", k: false, dupa: {}}]);
-//    console.log(foo);
 /////////////////////////
     function defaultData() {
+        idService.setNextPersonId(1);
+        idService.setNextProductId(1);
         $scope.data = {
             id: idService.getNextDataId(),
             title: "defaultTitle",
@@ -64,40 +99,99 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
             personsPool: []
         };
     }
-    defaultData();
-//    $scope.data.productsList = [{
-//            id: idService.getNextProductId(),
-//            name: "Pepsi",
-//            price: 4000.99,
-//            quantity: 6,
-//            persons: [1, 2, 3]
-//        }, {
-//            id: idService.getNextProductId(),
-//            name: "Kukurydza",
-//            price: 2.49,
-//            quantity: 2,
-//            persons: [1]
-//        }];
-//    $scope.data.personsPool = [{
-//            id: idService.getNextPersonId(),
-//            name: "Sawik",
-//            color: Please.make_color(),
-//            paid: false,
-//            contribution: 0
-//        }, {
-//            id: idService.getNextPersonId(),
-//            name: "Misiek",
-//            color: Please.make_color(),
-//            paid: true,
-//            contribution: 0
-//        }, {
-//            id: idService.getNextPersonId(),
-//            name: "Mścich",
-//            color: Please.make_color(),
-//            paid: false,
-//            contribution: 0
-//        }];
-//    $scope.debugMode = true;
+    /////sprawczam, czy jest jakis zapisany obiekt tymczasowy, jesli jest to go wczytuje
+    if (!angular.isObject(localStorageService.get(storageTempSaveName))) {
+        defaultData();
+    } else {
+        $scope.data = localStorageService.get(storageTempSaveName);
+        idService.setNextPersonId(findHighestId($scope.data.personsPool) + 1);
+        idService.setNextProductId(findHighestId($scope.data.productsList) + 1);
+    }
+//////////////////////////    
+    $scope.loadExample = function () {
+        defaultData();
+        $scope.data.title = "Shopping from the last Friday - Example bill";
+        $scope.data.productsList = [{
+                id: idService.getNextProductId(),
+                name: "Pepsi",
+                price: 4.99,
+                quantity: 6,
+                persons: [1, 2, 3, 4, 5, 6]
+            }, {
+                id: idService.getNextProductId(),
+                name: "Bottle of water",
+                price: 1.25,
+                quantity: 1,
+                persons: [3]
+            }, {
+                id: idService.getNextProductId(),
+                name: "Can of beer",
+                price: 2,
+                quantity: 16,
+                persons: [1, 2, 4, 6]
+            }, {
+                id: idService.getNextProductId(),
+                name: "Snickers",
+                price: 0.99,
+                quantity: 2,
+                persons: [3, 5]
+            }, {
+                id: idService.getNextProductId(),
+                name: "Salt (kg)",
+                price: 4.42,
+                quantity: 0.05,
+                persons: [1, 2, 3, 4, 5, 6]
+            }, {
+                id: idService.getNextProductId(),
+                name: "Bread",
+                price: 1.19,
+                quantity: 4,
+                persons: [1, 3, 4, 5, 6]
+            }, {
+                id: idService.getNextProductId(),
+                name: "Sausage (kg)",
+                price: 16.50,
+                quantity: 2.25,
+                persons: [1, 2, 3, 4, 5, 6]
+            }];
+        $scope.data.personsPool = [{
+                id: idService.getNextPersonId(),
+                name: "Bob",
+                color: Please.make_color(),
+                paid: false,
+                contribution: 0
+            }, {
+                id: idService.getNextPersonId(),
+                name: "John",
+                color: Please.make_color(),
+                paid: false,
+                contribution: 0
+            }, {
+                id: idService.getNextPersonId(),
+                name: "Kate",
+                color: Please.make_color(),
+                paid: false,
+                contribution: 0
+            }, {
+                id: idService.getNextPersonId(),
+                name: "Larry",
+                color: Please.make_color(),
+                paid: false,
+                contribution: 0
+            }, {
+                id: idService.getNextPersonId(),
+                name: "Jessica",
+                color: Please.make_color(),
+                paid: false,
+                contribution: 0
+            }, {
+                id: idService.getNextPersonId(),
+                name: "Brad",
+                color: Please.make_color(),
+                paid: false,
+                contribution: 0
+            }];
+    };
 ///////////////
     $scope.addPerson = function (person) {
         if (angular.isDefined(person)) {
@@ -137,9 +231,9 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
     };
     $scope.addProduct = function (product) {
         try {
-//            product.name = $scope.validateString(product.name);
-//            product.quantity = $scope.validateNumber(product.quantity);
-//            product.price = $scope.validateNumber(product.price);
+            product.name = $scope.validateString(product.name);
+            product.quantity = $scope.validateNumber(product.quantity);
+            product.price = $scope.validateNumber(product.price);
             product.id = idService.getNextProductId();
             $scope.data.productsList.push(angular.copy(product));
             $scope.refreshNewProduct();
@@ -162,7 +256,7 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
         }
         idPool.push(id);
     };
-    
+
     $scope.personShortcutColor = function (person, idPool) {
         var result = {};
         for (var p in idPool) {
@@ -301,8 +395,8 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
     };
     $scope.calculatePercentContribution = function (value) {
         if (angular.isNumber(value) && angular.isNumber($scope.data.total)) {
-            var percent = $scope.data.total / value;
-            return percent * 10;
+            var percent = 1 / ($scope.data.total / value);
+            return percent * 100;
         }
         return 0;
     };
@@ -335,6 +429,13 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
         localStorageService.set(storageKeyName, bills);
     };
 
+    $scope.checkIfExistsInLocalStorage = function (id) {
+        var bills = localStorageService.get(storageKeyName);
+        return bills.some(function (value) {
+            return value.id == id;
+        });
+    };
+
     $scope.open = function () {
         if (!$rootScope.openPopup) {
             $rootScope.openPopup = true;
@@ -344,14 +445,28 @@ app.controller("mainCtrl", function ($rootScope, $scope, idService, localStorage
             });
             windowPromise.result.then(function (result) {
                 $scope.data = result;
+                idService.setNextPersonId(findHighestId($scope.data.personsPool) + 1);
+                idService.setNextProductId(findHighestId($scope.data.productsList) + 1);
                 $location.path("/home");
                 alertService.info("Opened: " + result.title);
             }).finally(function () {
                 $rootScope.openPopup = false;
             });
         }
-
     };
+
+    function findHighestId(array) {
+        if (!angular.isArray(array)) {
+            throw "not an array";
+        }
+        var maxId = 0;
+        for (var a in array) {
+            if (array[a].id > maxId) {
+                maxId = array[a].id;
+            }
+        }
+        return maxId;
+    }
 //    $scope.open();
 ////////////////HOTKEYS////////////////
     function addHotkey(combo, description, callback) {

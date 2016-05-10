@@ -20,6 +20,7 @@
                         <td class="col-xs-4">
                             <span>{{bill.editDate| date:"dd/MM/yyyy HH:mm"}}</span>
                             <span><small>({{bill.editDate | timeAgo}})</small></span>
+                            <span class="glyphicon glyphicon-remove pull-right" ng-click="removeFromLocalStorage(bill.id)"></span>
                         </td>
                     </tr>
                 </tbody>

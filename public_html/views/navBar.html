@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse">
+<nav class="navbar">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
@@ -12,24 +12,27 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
             <div class="navbar-left">
-                <button type="button" class="btn btn-info navbar-btn" ng-click="newBill()">
+                <button type="button" class="btn btn-success navbar-btn" ng-click="newBill()">
                     New
                 </button>
-                <button type="button" class="btn btn-primary navbar-btn" ng-click="clear()">
+<!--                <button type="button" class="btn btn-primary navbar-btn" ng-click="clear()">
                     Clear
+                </button>-->
+                <button type="button" class="btn btn-default navbar-btn" ng-click="loadExample()">
+                    Load example
                 </button>
             </div>
             <div class="navbar-right">
-                <button type="button" class="btn btn-primary navbar-btn" ng-click="addAlert()">
+<!--                <button type="button" class="btn btn-primary navbar-btn" ng-click="addAlert()">
                     Generate alert
-                </button>
-                <button type="button" class="btn btn-danger navbar-btn" ng-click="toggleDebugMode()">
+                </button>-->
+<!--                <button type="button" class="btn btn-danger navbar-btn" ng-click="toggleDebugMode()">
                     Debug Mode
-                </button>
-                <button type="button" class="btn btn-warning navbar-btn" ng-confirm-click="save()">
+                </button>-->
+                <button type="button" class="btn btn-warning navbar-btn" ng-confirm-click="save()" message="Do you want to overwrite this bill?" condition="checkIfExistsInLocalStorage(data.id)">
                     Save
                 </button>
-                <button type="button" class="btn btn-primary navbar-btn" ng-click="open()">
+                <button type="button" class="btn btn-info navbar-btn" ng-click="open()">
                     Open
                 </button>
             </div>

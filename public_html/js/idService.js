@@ -17,7 +17,7 @@ app.service("idService", function () {
         getNextAlertId: function () {
             return nextAlertId++;
         },
-        setnextPersonId: function (id) {
+        setNextPersonId: function (id) {
             if (angular.isNumber(id)) {
                 nextPersonId = id;
             }

@@ -45,27 +45,32 @@ app.directive("ngConfirmClick", function () {
         templateUlr: "/views/confirmPopup.html",
         scope: {
             callback: "&ngConfirmClick",
-            message: "@"
+            message: "@",
+            condition: "&"
         },
         controller: function ($scope, $element, $uibModal) {
             $element.on("click", function () {
-                var windowPromise = $uibModal.open({
-                    templateUrl: "./views/confirmPopup.html",
-                    controller: "confirmPopupCtrl",
-                    backdrop: true,
-                    size: "sm",
-                    resolve: {
-                        message: function () {
-                            if (angular.isString($scope.message) && $scope.message.length > 0) {
-                                return $scope.message;
+                if ($scope.condition && $scope.condition()) {
+                    var windowPromise = $uibModal.open({
+                        templateUrl: "./views/confirmPopup.html",
+                        controller: "confirmPopupCtrl",
+                        backdrop: true,
+//                        size: "sm",
+                        resolve: {
+                            message: function () {
+                                if (angular.isString($scope.message) && $scope.message.length > 0) {
+                                    return $scope.message;
+                                }
+                                return "Do you want to save?";
                             }
-                            return "Do you want to save?";
                         }
-                    }
-                });
-                windowPromise.result.then(function (result) {
+                    });
+                    windowPromise.result.then(function (result) {
+                        $scope.callback();
+                    });
+                } else {
                     $scope.callback();
-                });
+                }
             });
         }
     };
